@@ -13,13 +13,13 @@ class ListAllUsersUseCase {
     const isUser = this.usersRepository.findById(user_id);
 
     if (!isUser) {
-      throw new AppError(`User ${user_id} not found`);
+      throw new AppError(`User not found`);
     }
 
     const isAdmin = isUser.admin;
 
     if (!isAdmin) {
-      throw new AppError(`User is not an administrator`);
+      throw new AppError(`User does not have admin permission`);
     }
 
     const users = this.usersRepository.list();

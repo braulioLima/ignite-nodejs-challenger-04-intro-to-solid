@@ -10,14 +10,11 @@ const errorMiddleware = (
   _next: NextFunction
 ): Response<any, Record<string, any>> => {
   if (error instanceof AppError) {
-    return response
-      .status(error.statusCode)
-      .json({ status: "error", error: error.message });
+    return response.status(error.statusCode).json({ error: error.message });
   }
 
   return response.status(500).json({
-    status: "error",
-    messsage: `Internal server error - ${error.message}`,
+    error: `Internal server error.`,
   });
 };
 

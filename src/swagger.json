@@ -1,0 +1,331 @@
+{
+  "openapi": "3.0.*",
+  "info": {
+    "title": "Challenger solid's documentation",
+    "description": "This is an documentation for one application using SOLID patterns",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Bráulio F. Lima",
+      "email": "braulio.freires.lima@gmail.com"
+    }
+  },
+  "tags": [
+    {
+      "name": "users",
+      "description": "Everything about your users."
+    }
+  ],
+  "paths": {
+    "/users": {
+      "get": {
+        "tags": ["users"],
+        "summary": "List all users",
+        "description": "",
+        "operationId": "listAllUsers",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "header",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List all users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/User"
+                  }
+                },
+                "example": [
+                  {
+                    "id": "ef6a1685-9e17-4f28-a79c-7ac77e81406d",
+                    "name": "Jonh Doe",
+                    "email": "jonhdoe@example.com",
+                    "admin": true,
+                    "created_at": "2020-11-03T21:53:45.466Z",
+                    "updated_at": "2020-11-03T21:53:45.466Z"
+                  },
+                  {
+                    "id": "ef6a1685-9e17-4f28-a79c-7ac77e81406e",
+                    "name": "Jonh T.",
+                    "email": "jonht@example.com",
+                    "admin": false,
+                    "created_at": "2020-11-03T21:53:45.466Z",
+                    "updated_at": "2020-11-03T21:53:45.466Z"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "User does not have permission or not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UserError"
+                },
+                "example": {
+                  "error": "User does not have administrator permission."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UserError"
+                },
+                "example": {
+                  "error": "Internal server error."
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["users"],
+        "summary": "Add a new user",
+        "description": "",
+        "operationId": "createUser",
+        "produces": ["application/json"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/CreateUser"
+              },
+              "example": {
+                "name": "John Doe",
+                "email": "johndoe@example.com"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "User created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/User"
+                },
+                "example": {
+                  "id": "ef6a1685-9e17-4f28-a79c-7ac77e81406d",
+                  "name": "Jonh Doe",
+                  "email": "jonhdoe@example.com",
+                  "admin": false,
+                  "created_at": "2020-11-03T21:53:45.466Z",
+                  "updated_at": "2020-11-03T21:53:45.466Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UserError"
+                },
+                "example": {
+                  "error": "User already exists."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UserError"
+                },
+                "example": {
+                  "error": "Internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}": {
+      "parameters": [
+        {
+          "name": "user_id",
+          "in": "path",
+          "required": true,
+          "description": "the user indentifier",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "tags": ["users"],
+        "responses": {
+          "200": {
+            "description": "Show user profile information.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/User"
+                },
+                "example": {
+                  "id": "ef6a1685-9e17-4f28-a79c-7ac77e81406d",
+                  "name": "Jonh Doe",
+                  "email": "jonhdoe@example.com",
+                  "admin": false,
+                  "created_at": "2020-11-03T21:53:45.466Z",
+                  "updated_at": "2020-11-03T21:53:45.466Z"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UserError"
+                },
+                "example": {
+                  "error": "User does not exist."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UserError"
+                },
+                "example": {
+                  "error": "Internal server error."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/admin": {
+      "parameters": [
+        {
+          "name": "user_id",
+          "in": "path",
+          "required": true,
+          "description": "the user indentifier",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "patch": {
+        "tags": ["users"],
+        "responses": {
+          "200": {
+            "description": "Turn an existing user within admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/User"
+                },
+                "example": {
+                  "id": "ef6a1685-9e17-4f28-a79c-7ac77e81406d",
+                  "name": "Jonh Doe",
+                  "email": "jonhdoe@example.com",
+                  "admin": true,
+                  "created_at": "2020-11-03T21:53:45.466Z",
+                  "updated_at": "2020-11-03T21:53:45.466Z"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UserError"
+                },
+                "example": {
+                  "error": "User does not exist."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UserError"
+                },
+                "example": {
+                  "error": "Internal server error."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "CreateUser": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "admin": {
+          "type": "boolean"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        }
+      }
+    },
+    "UserError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

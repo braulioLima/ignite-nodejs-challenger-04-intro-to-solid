@@ -13,7 +13,7 @@ class TurnUserAdminUseCase {
     const user = this.usersRepository.findById(user_id);
 
     if (!user) {
-      throw new AppError("User not found.", 404);
+      throw new AppError("User does not exist.", 404);
     }
 
     return this.usersRepository.turnAdmin(user);
